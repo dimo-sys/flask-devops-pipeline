@@ -5,12 +5,12 @@ pipeline {
     DOCKER_IMAGE = "flask-app:latest"
   }
 
-  stages {
-    stage('Clone') {
-      steps {
-        git branch: 'main', git credentialsId: 'github-creds', url: 'https://github.com/YOURUSER/flask-devops-pipeline.git'
-      }
-    }
+ stage('Clone') {
+  steps {
+    git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/dimo-sys/flask-devops-pipeline'
+  }
+}
+
 
     stage('Build Docker Image') {
       steps {
