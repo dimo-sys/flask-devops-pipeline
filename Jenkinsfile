@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git credentialsId: 'github-creds', url: 'https://github.com/dimo-sys/flask-devops-pipeline.git', branch: 'main'
+                git credentialsId: 'github-creds', url: 'https://github.com/dimo-sys/flask-devops-pipeline.git', branch: 'master'
             }
         }
 
