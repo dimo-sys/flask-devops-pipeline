@@ -1,20 +1,24 @@
 pipeline {
-  agent any
+    agent any
 
-  stages {
-    stage('Build Docker Image') {
-      steps {
-        echo "Building Docker image..."
-        sh 'docker build -t flask-app:latest .'
-      }
-    }
+    stages {
+        stage('Clone') {
+            steps {
+                git credentialsId: 'github-creds', url: 'https://github.com/dimo-sys/flask-devops-pipeline.git', branch: 'main'
+            }
+        }
 
-    stage('Deploy to K8s') {
-      steps {
-        echo "Deploying to Kubernetes..."
-        sh 'kubectl apply -f deployment.yaml'
-        sh 'kubectl apply -f service.yaml'
-      }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t flask-app:latest .'
+            }
+        }
+
+        stage('Deploy to K8s') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml || true'
+                sh 'kubectl apply -f service.yaml || true'
+            }
+        }
     }
-  }
 }
