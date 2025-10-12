@@ -2,39 +2,26 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "flask-app"
-        IMAGE_TAG = "latest"
+        DOCKER_IMAGE = 'flask-app:latest'
     }
 
     stages {
-
         stage('Build Docker Image') {
             steps {
-                echo "Building Docker image..."
-                sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
+                sh 'docker build -t ${DOCKER_IMAGE} .'
             }
         }
 
-        stage('Push Docker Image (optional)') {
-            when {
-                expression { return false } // Disable for now, enable later if you use DockerHub
-            }
+        stage('Deploy to K8s') {
             steps {
-                echo "Skipping Docker push..."
+                sh '''
+                if ! command -v kubectl &> /dev/null; then
+                    echo "kubectl not found, skipping deploy stage";
+                    exit 0;
+                fi
+                kubectl apply -f deployment.yaml
+                '''
             }
-        }
-
-        stage('Deploy to Kubernetes') {
-            steps {
-                echo "Deploying to Kubernetes..."
-                sh 'kubectl apply -f deployment.yaml || true'
-            }
-        }
-    }
-
-    post {
-        always {
-            echo "Pipeline finished."
         }
     }
 }
